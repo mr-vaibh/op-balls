@@ -43,18 +43,22 @@ def calculate_right_point_x(y):
 # Calculate the scaling factor for the ball
 def calculate_scaling_factor(y):
     max_y = line_2_distance - line_1_distance
-    return (max_y - (y - line_1_distance)) / max_y
+    scaling_factor = (max_y - (y - line_1_distance)) / max_y if max_y != 0 else 1
+    scaling_rate = 3  # Adjust this value to control the rate of scaling
+    return scaling_factor * scaling_rate
 
 # Function to apply motion blur effect
-def apply_motion_blur(surface, rect, alpha):
-    temp_surface = pygame.Surface((rect.width, rect.height)).convert_alpha()
-    temp_surface.fill((0, 0, 0, alpha))
-    surface.blit(temp_surface, rect.topleft, special_flags=pygame.BLEND_RGBA_SUB)
+# def apply_motion_blur(surface, y, radius, alpha):
+#     blur_surface = pygame.Surface((2 * ball_radius, 2 * ball_radius), pygame.SRCALPHA)
+#     pygame.draw.circle(blur_surface, (0, 0, 0, alpha), (radius, radius), radius)
+#     surface.blit(blur_surface, (ball_x - radius, y - radius))
 
 # Game loop
 running = True
-ball_y = -50  # Initial position above the screen
+ball_y = 20  # Initial position above the screen
 ball_speed = 20  # Speed at which the ball moves vertically
+score = 0
+new_ball_timer = 0  # Timer for new ball appearance
 
 # Randomly generate x-coordinate within the lawn
 ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
@@ -67,6 +71,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Check if the mouse click is inside the ball
+            if ball_y > 0 and ball_y < HEIGHT and abs(event.pos[0] - ball_x) < ball_radius:
+                score += 1
+                # Reset ball position if clicked
+                ball_y = 20
+                ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
 
     # Clear the window
     window.fill(LIGHT_BROWN)
@@ -98,25 +109,34 @@ while running:
     # Calculate the ball position and size based on the scaling factor
     ball_y += ball_speed
     scaling_factor = calculate_scaling_factor(ball_y)
-    ball_radius = 20 / scaling_factor
+    ball_radius = 20 / scaling_factor if scaling_factor != 0 else 5
 
-    # Check if the ball has passed through the screen
-    if ball_y > HEIGHT + ball_radius:
-        running = False
+    # Check if the ball has passed through the screen or if it's time for a new ball
+    if ball_y > HEIGHT + ball_radius or new_ball_timer >= 120:
+        ball_y = 20  # Reset ball position
+        ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
+        new_ball_timer = 0
 
-    # Draw the motion blur effect
-    alpha = 15  # Alpha value for the motion blur effect
-    blur_rect = pygame.Rect(ball_x - ball_radius, ball_y - ball_radius, ball_radius * 2, ball_radius * 2)
-    apply_motion_blur(window, blur_rect, alpha)
+    # # Draw the motion blur effect
+    # alpha = 50  # Alpha value for the motion blur effect
+    # apply_motion_blur(window, ball_y, int(ball_radius), alpha)
 
     # Draw the ball
     pygame.draw.circle(window, RED, (int(ball_x), int(ball_y)), int(ball_radius))
+
+    # Draw the score
+    font = pygame.font.Font(None, 36)
+    score_text = font.render(f"Score: {score}", True, WHITE)
+    window.blit(score_text, (10, 10))
 
     # Update the display
     pygame.display.flip()
 
     # Control the frame rate
     clock.tick(fps)
+
+    # Increment the new ball timer
+    new_ball_timer += 1
 
 # Quit the game
 pygame.quit()
