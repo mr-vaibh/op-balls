@@ -18,6 +18,7 @@ with open("config.txt", "r") as config_file:
 
 # Set up colors
 WHITE = (255, 255, 255)
+WHITE_2 = (250, 250, 250)
 CONTRAST_COEFFICIENT = 25.5 * contrast
 GREEN = (CONTRAST_COEFFICIENT, 255, CONTRAST_COEFFICIENT)
 LIGHT_BROWN = (181, 101, 29)
@@ -63,8 +64,14 @@ def calculate_scaling_factor(y):
 running = True
 ball_y = 20  # Initial position above the screen
 ball_speed = 20  # Speed at which the ball moves vertically
+total_balls_thrown = 0
 score = 0
+missed_balls = 0
 new_ball_timer = 0  # Timer for new ball appearance
+
+# Define font size for displaying statistics
+font_size = 24
+font = pygame.font.Font(None, font_size)
 
 # TODO: add weightage of score. a dynamic coefficient to know after how much time the subject is taking to give response
 
@@ -83,6 +90,7 @@ while running:
             # Check if the mouse click is inside the ball
             if ball_y > 0 and ball_y < HEIGHT and abs(event.pos[0] - ball_x) < ball_radius:
                 score += 1
+                total_balls_thrown += 1
                 # Reset ball position if clicked
                 ball_y = 20
                 ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
@@ -124,18 +132,24 @@ while running:
         ball_y = 20  # Reset ball position
         ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
         new_ball_timer = 0
+        total_balls_thrown += 1
+        missed_balls += 1
 
     # # Draw the motion blur effect
     # alpha = 50  # Alpha value for the motion blur effect
     # apply_motion_blur(window, ball_y, int(ball_radius), alpha)
 
     # Draw the ball
-    pygame.draw.circle(window, RED, (int(ball_x), int(ball_y)), int(ball_radius))
+    pygame.draw.circle(window, WHITE_2, (int(ball_x), int(ball_y)), int(ball_radius))
 
-    # Draw the score
-    font = pygame.font.Font(None, 36)
+    # Draw the score and statistics on the screen
     score_text = font.render(f"Score: {score}", True, WHITE)
+    balls_thrown_text = font.render(f"Balls Thrown: {total_balls_thrown}", True, WHITE)
+    missed_balls_text = font.render(f"Missed Balls: {missed_balls}", True, WHITE)
+
     window.blit(score_text, (10, 10))
+    window.blit(balls_thrown_text, (10, 10 + font_size + 5))
+    window.blit(missed_balls_text, (10, 10 + 2 * (font_size + 5)))
 
     # Update the display
     pygame.display.flip()
