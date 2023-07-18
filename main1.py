@@ -11,9 +11,15 @@ HEIGHT = 400
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Sports Pitch")
 
+with open("config.txt", "r") as config_file:
+    string = config_file.readline()
+    contrast = string.split("=")[1] or 0
+    contrast = 0 if (int(contrast) < 0 or int(contrast) > 10) else int(contrast)
+
 # Set up colors
 WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
+CONTRAST_COEFFICIENT = 25.5 * contrast
+GREEN = (CONTRAST_COEFFICIENT, 255, CONTRAST_COEFFICIENT)
 LIGHT_BROWN = (181, 101, 29)
 DARK_BROWN = (139, 69, 19)
 BLACK = (0, 0, 0)
@@ -59,6 +65,8 @@ ball_y = 20  # Initial position above the screen
 ball_speed = 20  # Speed at which the ball moves vertically
 score = 0
 new_ball_timer = 0  # Timer for new ball appearance
+
+# TODO: add weightage of score. a dynamic coefficient to know after how much time the subject is taking to give response
 
 # Randomly generate x-coordinate within the lawn
 ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
