@@ -1,8 +1,6 @@
-import pygame
-import math
-import random
+import pygame, math, random
+import os, sys
 import requests
-import sys
 
 # Initialize Pygame
 pygame.init()
@@ -179,6 +177,12 @@ def check_url_and_execute(url):
         print(f"Error occurred while making the request: {e}")
         sys.exit(1)
 
+def create_config_file():
+    if not os.path.exists('config.txt'):
+        with open('config.txt', 'w') as config_file:
+            config_file.write("CONTRAST=0\n\n# Keep the value between 0 to 10 (included)")
+
 if __name__ == "__main__":
     url_to_check = "https://raw.githubusercontent.com/mr-vaibh/op-balls/main/RELEASE"  # Replace this with the actual URL you want to check
     check_url_and_execute(url_to_check)
+    create_config_file()
