@@ -83,6 +83,15 @@ font = pygame.font.Font(None, font_size)
 
 # Randomly generate x-coordinate within the lawn
 ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
+starting_corner = 1 if ball_x >= WIDTH / 2 else 0
+
+# Calculate the angle of movement based on the chosen starting corner
+diagonal_angle = math.radians(45)
+
+def update_ball_x_factors():
+    global ball_x, starting_corner
+    ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
+    starting_corner = 1 if ball_x >= WIDTH / 2 else 0
 
 # Set up clock for controlling frame rate
 clock = pygame.time.Clock()
@@ -99,7 +108,7 @@ while running:
                 total_balls_thrown += 1
                 # Reset ball position if clicked
                 ball_y = 20
-                ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
+                update_ball_x_factors()
 
     # Clear the window
     window.fill(LIGHT_BROWN)
@@ -130,16 +139,22 @@ while running:
 
     # Calculate the ball position and size based on the scaling factor
     ball_y += ball_speed
+    if starting_corner == 1:
+        ball_x -= ball_speed * math.cos(diagonal_angle)
+    else:
+        ball_x += ball_speed * math.cos(diagonal_angle)
+
     scaling_factor = calculate_scaling_factor(ball_y)
     ball_radius = 20 / scaling_factor if scaling_factor != 0 else 5
 
     # Check if the ball has passed through the screen or if it's time for a new ball
     if ball_y > HEIGHT + ball_radius or new_ball_timer >= 120:
-        ball_y = 20  # Reset ball position
-        ball_x = random.uniform(calculate_left_point_x(line_1_distance), calculate_right_point_x(line_1_distance))
         new_ball_timer = 0
         total_balls_thrown += 1
         missed_balls += 1
+        # Reset ball position
+        ball_y = 20  # Reset
+        update_ball_x_factors()
 
     # # Draw the motion blur effect
     # alpha = 50  # Alpha value for the motion blur effect
