@@ -27,8 +27,8 @@ WHITE = (255, 255, 255)
 WHITE_2 = (250, 250, 250)
 CONTRAST_COEFFICIENT = 25.5 * contrast
 GREEN = (CONTRAST_COEFFICIENT, 255, CONTRAST_COEFFICIENT)
-LIGHT_BROWN = (181, 101, 29)
-DARK_BROWN = (139, 69, 19)
+LIGHT_BLUE = (0, 108, 183)  # New color for LIGHT_BLUE
+DARK_BLUE = (0, 89, 165)  # New color for DARK_BLUE
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)  # Ball color
 
@@ -111,7 +111,7 @@ while running:
                 update_ball_x_factors()
 
     # Clear the window
-    window.fill(LIGHT_BROWN)
+    window.fill(LIGHT_BLUE)
 
     # Draw the ground trapezium
     ground_points = [
@@ -125,9 +125,9 @@ while running:
     # Create a textured ground
     for y in range(HEIGHT):
         for x in range(WIDTH):
-            if window.get_at((x, y)) == LIGHT_BROWN:
+            if window.get_at((x, y)) == LIGHT_BLUE:
                 if (x + y) % 6 == 0 or (x + y) % 6 == 1:
-                    window.set_at((x, y), DARK_BROWN)
+                    window.set_at((x, y), DARK_BLUE)
 
     # Draw the horizontal lines
     pygame.draw.line(window, BLACK, (0, line_1_distance), (WIDTH, line_1_distance), 1)
