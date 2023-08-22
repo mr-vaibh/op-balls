@@ -1,12 +1,6 @@
 import pygame, math, random
-import os, sys
+import sys
 import requests
-
-def create_config_file():
-    if not os.path.exists('config.txt'):
-        with open('config.txt', 'w') as config_file:
-            config_file.write("CONTRAST=0\n\n# Keep the value between 0 to 10 (included)")
-create_config_file()
 
 # Initialize Pygame
 pygame.init()
@@ -98,6 +92,7 @@ clock = pygame.time.Clock()
 fps = 60  # Desired frame rate
 
 while running:
+    print("hiii")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
