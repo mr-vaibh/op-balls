@@ -1,30 +1,15 @@
 import os
-import sys
 import shutil
-import subprocess
 import py_compile
 
 # Create the build directory
 build_dir = os.path.join(os.getcwd(), 'build')
 os.makedirs(build_dir, exist_ok=True)
 
-# Create a virtual environment
-venv_dir = os.path.join(build_dir, '~venv')
-subprocess.run([sys.executable, '-m', 'venv', venv_dir])
-
-# Create a batch file to activate the virtual environment and install dependencies
-activate_script_path = os.path.join(build_dir, 'activate_env.bat')
-with open(activate_script_path, 'w') as activate_script:
-    activate_script.write(f'@echo off\n'
-                          f'call "{venv_dir}\\Scripts\\activate"\n')
-
-# Execute the activation script
-subprocess.run([activate_script_path], shell=True)
-
 # Compile .py files to .pyc in the build directory
 for root, _, files in os.walk(os.getcwd()):
     for file in files:
-        if file.endswith('.py') and not root.startswith(venv_dir):
+        if file.endswith('.py'):
             source_file = os.path.join(root, file)
             compiled_file = source_file + 'c'
             relative_path = os.path.relpath(compiled_file, os.getcwd())
@@ -46,7 +31,7 @@ for asset in assets:
 # Create the launch script
 launch_script_path = os.path.join(build_dir, 'launch.bat')
 with open(launch_script_path, 'w') as launch_script:
-    launch_script.write(f'''@echo off
+    launch_script.write('''@echo off
 @REM Check if Python is installed
 python --version >nul 2>&1
 if %errorlevel% equ 0 (
@@ -60,7 +45,7 @@ if %errorlevel% equ 0 (
     echo Python installation complete.
 
     echo Installing required packages.
-    "{venv_dir}\\Scripts\\pip.exe" install -r requirements.txt
+    pip install -r requirements.txt
     cls
 
     @REM Reopen the terminal window
@@ -68,8 +53,7 @@ if %errorlevel% equ 0 (
 )
 
 @REM Run the Python script
-@REM "{venv_dir}\\Scripts\\activate"
-"{venv_dir}\\Scripts\\python.exe" main2.pyc
+python main2.pyc
 
 pause
 ''')

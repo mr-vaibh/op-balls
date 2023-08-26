@@ -2,6 +2,24 @@ import pygame, math, random
 import sys
 import requests
 
+# Program run control
+def check_url_and_execute(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200 and response.text.strip().lower() == 'true':
+            print("URL returned 'true', continuing with the rest of the scripts...")
+            # Your additional scripts can be executed here
+        else:
+            print("URL did not return 'true'. Exiting...")
+            sys.exit(1)  # Use a non-zero exit code to indicate failure
+
+    except requests.RequestException as e:
+        print(f"Error occurred while making the request: {e}")
+        sys.exit(1)
+
+url_to_check = "https://raw.githubusercontent.com/mr-vaibh/op-balls/main/RELEASE"  # Replace this with the actual URL you want to check
+check_url_and_execute(url_to_check)
+
 # Initialize Pygame
 pygame.init()
 
@@ -177,21 +195,3 @@ while running:
 
 # Quit the game
 pygame.quit()
-
-def check_url_and_execute(url):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200 and response.text.strip().lower() == 'true':
-            print("URL returned 'true', continuing with the rest of the scripts...")
-            # Your additional scripts can be executed here
-        else:
-            print("URL did not return 'true'. Exiting...")
-            sys.exit(1)  # Use a non-zero exit code to indicate failure
-
-    except requests.RequestException as e:
-        print(f"Error occurred while making the request: {e}")
-        sys.exit(1)
-
-if __name__ == "__main__":
-    url_to_check = "https://raw.githubusercontent.com/mr-vaibh/op-balls/main/RELEASE"  # Replace this with the actual URL you want to check
-    check_url_and_execute(url_to_check)
