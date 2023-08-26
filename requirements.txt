@@ -4,3 +4,5 @@ idna==3.4
 pygame==2.5.0
 requests==2.31.0
 urllib3==2.0.4
+tk==0.1.0
+opencv-python==4.8.0.76

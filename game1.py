@@ -92,7 +92,6 @@ clock = pygame.time.Clock()
 fps = 60  # Desired frame rate
 
 while running:
-    print("hiii")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False

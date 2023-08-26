@@ -7,6 +7,10 @@ import cv2
 import time
 
 def launch_game(game_script):
+    if os.path.exists(game_script + '.py'):
+        game_script += '.py'
+    else:
+        game_script += '.pyc'
     subprocess.Popen(["python", game_script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def update_contrast(value):
@@ -101,7 +105,7 @@ def main_menu():
     note_label.pack()
 
     # Add a button to launch game1.py
-    button1 = tk.Button(root, text="Visual Reaction Time", command=lambda: launch_game("game1.py"), font=("Helvetica", 12))
+    button1 = tk.Button(root, text="Visual Reaction Time", command=lambda: launch_game("game1"), font=("Helvetica", 12))
     button1.pack(pady=20)
 
     # Add a separator to visually separate sections
