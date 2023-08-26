@@ -28,10 +28,12 @@ for asset in assets:
         elif os.path.isdir(source_path):
             shutil.copytree(source_path, target_path)
 
-# Create the launch script
-launch_script_path = os.path.join(build_dir, 'launch.bat')
-with open(launch_script_path, 'w') as launch_script:
-    launch_script.write('''@echo off
+# Create the batch script
+install_script_path = os.path.join(build_dir, 'INSTALL.bat')
+launch_script_path = os.path.join(build_dir, 'START.bat')
+
+with open(install_script_path, 'w') as install_script:
+    install_script.write('''@echo off
 @REM Check if Python is installed
 python --version >nul 2>&1
 if %errorlevel% equ 0 (
@@ -43,19 +45,19 @@ if %errorlevel% equ 0 (
     python_installer.exe /quiet PrependPath=1
     del python_installer.exe
     echo Python installation complete.
-
-    echo Installing required packages.
-    pip install -r requirements.txt
-    cls
-
-    @REM Reopen the terminal window
-    start cmd.exe
 )
+
+pause
+''')
+with open(launch_script_path, 'w') as launch_script:
+    launch_script.write('''@echo off
+@REM Installing dependecies
+pip install -r requirements.txt
+echo All dependent packages installed
+cls
 
 @REM Run the Python script
 python main2.pyc
-
-pause
 ''')
 
 print("Build process completed. You can find the build files in the 'build' directory.")
