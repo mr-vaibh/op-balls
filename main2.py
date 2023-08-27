@@ -37,9 +37,12 @@ def stop_recording():
 
 def record_camera():
     global recording, selected_camera
+    # Create the "response" folder if it doesn't exist
+    recording_folder = "recording"
+    os.makedirs(recording_folder, exist_ok=True)
     # Generate a unique filename based on the current time
     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    video_filename = f"recording_{timestamp}.avi"
+    video_filename = f"{recording_folder}/recording_{timestamp}.avi"
 
     cap = cv2.VideoCapture(selected_camera)
     if not cap.isOpened():
@@ -107,6 +110,10 @@ def main_menu():
     # Add a button to launch game1.py
     button1 = tk.Button(root, text="Visual Reaction Time", command=lambda: launch_game("game1"), font=("Helvetica", 12))
     button1.pack(pady=20)
+
+    # Add a button to launch game2.py
+    button2 = tk.Button(root, text="Distance vs Near Target", command=lambda: launch_game("game2"), font=("Helvetica", 12))
+    button2.pack(pady=(0,20))
 
     # Add a separator to visually separate sections
     separator = ttk.Separator(root, orient="horizontal")
