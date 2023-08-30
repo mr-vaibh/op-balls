@@ -1,6 +1,7 @@
-import pygame, math, random
+import pygame, math, random, time
 import sys
 import requests
+from datetime import datetime
 
 # Program run control
 def check_url_and_execute(url):
@@ -87,6 +88,10 @@ score = 0
 missed_balls = 0
 new_ball_timer = 0  # Timer for new ball appearance
 
+# Delay and Time control
+do_delay = True
+last_record_time = None
+
 # Define font size for displaying statistics
 font_size = 24
 font = pygame.font.Font(None, font_size)
@@ -109,7 +114,12 @@ def update_ball_x_factors():
 clock = pygame.time.Clock()
 fps = 60  # Desired frame rate
 
-while running:
+EXPORT_DATA = {
+    "response_game1_array": []
+}
+
+i = 1
+while running and i <= 5:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -121,6 +131,11 @@ while running:
                 # Reset ball position if clicked
                 ball_y = 20
                 update_ball_x_factors()
+                i += 1
+                do_delay = True
+
+                print((datetime.now() - last_record_time).total_seconds())
+                EXPORT_DATA["response_game1_array"].append((datetime.now() - last_record_time).total_seconds())
 
     # Clear the window
     window.fill(LIGHT_BLUE)
@@ -159,6 +174,8 @@ while running:
     scaling_factor = calculate_scaling_factor(ball_y)
     ball_radius = 20 / scaling_factor if scaling_factor != 0 else 5
 
+    ball_radius = 0.1 if do_delay else ball_radius
+
     # Check if the ball has passed through the screen or if it's time for a new ball
     if ball_y > HEIGHT + ball_radius or new_ball_timer >= 120:
         new_ball_timer = 0
@@ -193,5 +210,34 @@ while running:
     # Increment the new ball timer
     new_ball_timer += 1
 
+    if do_delay:
+        button_clicked = False
+        do_delay = False
+        duration = 1
+        time.sleep(duration)
+
+        last_record_time = datetime.now()
+        print(last_record_time)
+
 # Quit the game
 pygame.quit()
+
+print(EXPORT_DATA["response_game1_array"])
+
+import os, csv
+# Create the "response" folder if it doesn't exist
+response_folder = "response"
+os.makedirs(response_folder, exist_ok=True)
+# Export response time data to CSV
+current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+csv_filename = f"{response_folder}/VisualReactionTime_{current_datetime}.csv"
+with open(csv_filename, "w", newline="") as csv_file:
+    csv_writer = csv.writer(csv_file)
+    csv_writer.writerow(["Index", "Hit Score Response Time (seconds)"])  # Write header row
+    for idx, response_time in enumerate(EXPORT_DATA["response_game1_array"], start=1):
+        csv_writer.writerow([idx, response_time])
+    csv_writer.writerow([])
+    csv_writer.writerow(["Scored Balls", "Missed Balls", "Total Balls Thrown"])
+    csv_writer.writerow([score, missed_balls, total_balls_thrown])
+
+print(f"Response data exported to {csv_filename}")
