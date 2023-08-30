@@ -87,7 +87,7 @@ def main_menu():
 
     root = tk.Tk()
     root.title("Optometry Games Menu")
-    root.geometry("400x500")
+    root.geometry("400x600")
 
     label = tk.Label(root, text="Optometry Games Menu", font=("Helvetica", 20))
     label.pack(pady=20)
@@ -114,6 +114,10 @@ def main_menu():
     # Add a button to launch game2.py
     button2 = tk.Button(root, text="Distance vs Near Target", command=lambda: launch_game("game2"), font=("Helvetica", 12))
     button2.pack(pady=(0,20))
+
+    # Add a button to launch game3.py
+    button3 = tk.Button(root, text="Length of time required", command=lambda: launch_game("game3"), font=("Helvetica", 12))
+    button3.pack(pady=(0,20))
 
     # Add a separator to visually separate sections
     separator = ttk.Separator(root, orient="horizontal")
