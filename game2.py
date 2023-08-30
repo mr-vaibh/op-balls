@@ -73,13 +73,6 @@ def calculate_scaling_factor(y):
     scaling_rate = 3  # Adjust this value to control the rate of scaling
     return scaling_factor * scaling_rate
 
-def timebreak_random():
-    ball_radius = 1
-    pygame.draw.circle(window, WHITE_2, (int(ball_x), int(ball_y)), int(ball_radius))
-    pygame.display.flip()
-    duration = random.randint(1, 5)
-    time.sleep(duration)
-
 # Function to apply motion blur effect
 # def apply_motion_blur(surface, y, radius, alpha):
 #     blur_surface = pygame.Surface((2 * ball_radius, 2 * ball_radius), pygame.SRCALPHA)
@@ -98,6 +91,7 @@ new_ball_timer = 0  # Timer for new ball appearance
 growth_rate = 1.5
 ball_radius = 0.1
 
+# Delay and Time control
 do_delay = True
 last_record_time = None
 
@@ -124,7 +118,7 @@ clock = pygame.time.Clock()
 fps = 60  # Desired frame rate
 
 EXPORT_DATA = {
-    "response_array_appear": []
+    "response_game2_array": []
 }
 
 button_clicked = False
@@ -145,7 +139,7 @@ while running and i <= 5:
                 do_delay = True
 
                 print((datetime.now() - last_record_time).total_seconds())
-                EXPORT_DATA["response_array_appear"].append((datetime.now() - last_record_time).total_seconds())
+                EXPORT_DATA["response_game2_array"].append((datetime.now() - last_record_time).total_seconds())
                 i += 1
                 button_clicked = True  # Set the flag to prevent further button clicks
 
@@ -256,7 +250,7 @@ while running and i <= 5:
 # Quit the game
 pygame.quit()
 
-print(EXPORT_DATA["response_array_appear"])
+print(EXPORT_DATA["response_game2_array"])
 
 import os, csv
 # Create the "response" folder if it doesn't exist
@@ -264,14 +258,14 @@ response_folder = "response"
 os.makedirs(response_folder, exist_ok=True)
 # Export response time data to CSV
 current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-csv_filename = f"{response_folder}/APPEAR_{current_datetime}.csv"
+csv_filename = f"{response_folder}/DistanceVsNearTarget_{current_datetime}.csv"
 with open(csv_filename, "w", newline="") as csv_file:
     csv_writer = csv.writer(csv_file)
     csv_writer.writerow(["Index", "Appear Response Time (seconds)"])  # Write header row
-    for idx, response_time in enumerate(EXPORT_DATA["response_array_appear"], start=1):
+    for idx, response_time in enumerate(EXPORT_DATA["response_game2_array"], start=1):
         csv_writer.writerow([idx, response_time])
+    csv_writer.writerow([])
+    csv_writer.writerow(["Scored Balls", "Missed Balls", "Total Balls Thrown"])
+    csv_writer.writerow([score, missed_balls, total_balls_thrown])
 
-print(f"Response time data exported to {csv_filename}")
-
-# TODO: make a random timer around [1-5 seconds] and record the player reponse time response
-# make 5 levels of each
+print(f"Response data exported to {csv_filename}")
