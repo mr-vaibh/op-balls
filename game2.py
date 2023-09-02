@@ -125,9 +125,12 @@ button_clicked = False
 i = 1
 while running and i <= 5:
     for event in pygame.event.get():
+        # this 0.2 is a hack that the player can't score by pressing the button before the ball even appears
+        not_pressed_before_appeared = ball_radius > 0.2
+
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN and not button_clicked:
+        elif event.type == pygame.MOUSEBUTTONDOWN and not button_clicked and not_pressed_before_appeared:
             mouse_x, mouse_y = event.pos
             if button_x <= mouse_x <= button_x + button_width and button_y <= mouse_y <= button_y + button_height:
                 score += 1
